@@ -1,25 +1,22 @@
-import { createApp } from 'vue'
+// src/main.js
+import { createApp, ref } from 'vue'
 import App from './App.vue'
 import router from './router'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './lib/firebase'
 
-// Bootstrap
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap'
-
-// PrimeVue
-import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura'
-
-// Components used across pages
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
+// Optional global CSS
+import './assets/main.css'
 
 const app = createApp(App)
-app.use(router)
-app.use(PrimeVue, { theme: { preset: Aura } })
 
-// Register global PrimeVue components
-app.component('DataTable', DataTable)
-app.component('Column', Column)
+// Reactive current user
+const currentUserRef = ref(null)
+onAuthStateChanged(auth, (user) => {
+  currentUserRef.value = user
+})
 
-app.mount('#app')
+// Make it available to all components
+app.provide('currentUserRef', currentUserRef)
+
+app.use(router).mount('#app')

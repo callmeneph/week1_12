@@ -1,19 +1,20 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
-
-// Import your views
 import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import ContactView from '../views/ContactView.vue'
+import FirebaseSigninView from '../views/FirebaseSigninView.vue'
+import FirebaseRegisterView from '../views/FirebaseRegisterView.vue'
+import LogoutView from '../views/LogoutView.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: HomeView },
-  { path: '/about', name: 'About', component: AboutView },
-  { path: '/contact', name: 'Contact', component: ContactView },
+  { path: '/', name: 'home', component: HomeView },
+  { path: '/signin', name: 'signin', component: FirebaseSigninView },
+  { path: '/register', name: 'register', component: FirebaseRegisterView },
+  { path: '/logout', name: 'logout', component: LogoutView }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 })
 
 export default router
