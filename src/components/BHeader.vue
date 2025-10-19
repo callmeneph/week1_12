@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
     <router-link to="/" class="navbar-brand fw-bold">📚 My Library</router-link>
+    <RouterLink class="nav-link" to="/weather">Get Weather</RouterLink>
+    <RouterLink class="nav-link" to="/books/api">CountBook API</RouterLink>
 
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto">
