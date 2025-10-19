@@ -1,9 +1,12 @@
+<!-- src/views/HomeView.vue -->
+<script setup>
+import { inject, computed } from 'vue'
+const currentUserRef = inject('currentUserRef', null)
+const email = computed(() => currentUserRef?.value?.email || null)
+</script>
+
 <template>
   <h1>Home</h1>
-  <p>If navigation works, clicking the buttons in the header (or below) should change route.</p>
-
-  <div class="mt-3 d-flex gap-2">
-    <RouterLink class="btn btn-outline-primary btn-sm" :to="{ name: 'signin' }">Go Sign in</RouterLink>
-    <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'register' }">Go Register</RouterLink>
-  </div>
+  <p v-if="email">Welcome back, <strong>{{ email }}</strong>.</p>
+  <p v-else>Use the buttons in the header to sign in or register.</p>
 </template>
