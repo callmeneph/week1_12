@@ -1,52 +1,24 @@
 <template>
-  <!-- Using Bootstrap's Header template (starter code) -->
-  <!-- https://getbootstrap.com/docs/5.0/examples/headers/ -->
-  <div class="container">
-    <header class="d-flex justify-content-center py-3">
-      <ul class="nav nav-pills">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
+    <router-link to="/" class="navbar-brand fw-bold">📚 My Library</router-link>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a href="#" class="nav-link active" aria-current="page">Home (Week 4)</a>
+          <router-link to="/" class="nav-link" active-class="active">Home (Week 4)</router-link>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">About</a></li>
-        <li class="nav-item"><a href="#" class="nav-link">Contact us</a></li>
+        <li class="nav-item">
+          <router-link to="/about" class="nav-link" active-class="active">About</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link to="/contact" class="nav-link" active-class="active">Contact us</router-link>
+        </li>
       </ul>
-    </header>
-  </div>
+    </div>
+  </nav>
 </template>
 
 <style scoped>
-.b-example-divider {
-  height: 3rem;
-  background-color: rgba(0, 0, 0, 0.1);
-  border: solid rgba(0, 0, 0, 0.15);
-  border-width: 1px 0;
-  box-shadow:
-    inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1),
-    inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
-}
-
-.form-control-dark {
-  color: #fff;
-  background-color: var(--bs-dark);
-  border-color: var(--bs-gray);
-}
-.form-control-dark:focus {
-  color: #fff;
-  background-color: var(--bs-dark);
-  border-color: #fff;
-  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
-}
-
-.bi {
-  vertical-align: -0.125em;
-  fill: currentColor;
-}
-
-.text-small {
-  font-size: 85%;
-}
-
-.dropdown-toggle {
-  outline: 0;
-}
+.navbar { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); }
+.nav-link.active { font-weight: bold; color: #275fda !important; }
 </style>
