@@ -11,6 +11,9 @@ const email = computed(() => currentUserRef?.value?.email || null)
     <RouterLink class="me-3 text-decoration-none" to="/">Home</RouterLink>
     <RouterLink class="me-3 text-decoration-none" to="/addbook">Add Book</RouterLink>
     <RouterLink class="btn btn-outline-secondary btn-sm ms-2" to="/books/count"> Book Count </RouterLink>
+    
+    <RouterLink class="me-3 text-decoration-none" to="/weather">Weather</RouterLink>
+
 
 
     <div class="ms-auto d-flex align-items-center gap-2">
