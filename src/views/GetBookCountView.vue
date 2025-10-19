@@ -4,7 +4,7 @@ import axios from 'axios'
 
 // ✅ Replace this after you deploy the function (step 2C).
 // For now you can leave it as an empty string to avoid accidental calls.
-const FUNCTION_URL = ''  // e.g. "https://REGION-PROJECT.cloudfunctions.net/countBooks"
+const FUNCTION_URL = "https://australia-southeast1-fit5032-week6-mahdi.cloudfunctions.net/countBooks"  // e.g. "https://REGION-PROJECT.cloudfunctions.net/countBooks"
 
 const loading = ref(false)
 const count = ref(null)
