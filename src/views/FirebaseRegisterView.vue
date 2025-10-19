@@ -1,54 +1,20 @@
-<!-- src/views/FirebaseRegisterView.vue -->
-<script setup>
+// RegisterView.vue (script setup)
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { auth } from '../firebase'
+import { auth } from '@/lib/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { useRouter, RouterLink } from 'vue-router'
 
-const router = useRouter()
 const email = ref('')
 const password = ref('')
-const loading = ref(false)
-const errorMsg = ref('')
+const err = ref('')
+const router = useRouter()
 
 const register = async () => {
-  errorMsg.value = ''
-  loading.value = true
+  err.value = ''
   try {
-    const cred = await createUserWithEmailAndPassword(auth, email.value, password.value)
-    console.log('[Register] success:', cred.user)
-    router.push('/signin')
+    await createUserWithEmailAndPassword(auth, email.value, password.value)
+    router.push('/')   // header should now show "Signed in as ..."
   } catch (e) {
-    console.error(e)
-    errorMsg.value = e.message || 'Registration failed'
-  } finally {
-    loading.value = false
+    err.value = e.message
   }
 }
-</script>
-
-<template>
-  <div class="container py-4" style="max-width: 680px">
-    <h2 class="mb-3">Register</h2>
-
-    <form @submit.prevent="register" novalidate>
-      <div class="mb-3">
-        <label class="form-label" for="regEmail">Email</label>
-        <input id="regEmail" type="email" class="form-control" v-model="email" required />
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="regPass">Password</label>
-        <input id="regPass" type="password" class="form-control" v-model="password" required />
-        <div class="form-text">Min 6 characters (Firebase rule)</div>
-      </div>
-
-      <div v-if="errorMsg" class="alert alert-danger py-2">{{ errorMsg }}</div>
-
-      <button class="btn btn-primary" :disabled="loading">
-        {{ loading ? 'Registering…' : 'Register' }}
-      </button>
-      <router-link to="/signin" class="btn btn-link">Already registered? Sign in</router-link>
-    </form>
-  </div>
-</template>

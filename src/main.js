@@ -1,63 +1,58 @@
 // src/main.js
-import { createApp, ref, h } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { createApp, ref } from 'vue'
 import App from './App.vue'
-import { auth } from './firebase'
+import router from './router'
+
+// ---- Styles (optional but recommended)
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap' // optional, only if you want dropdowns/modals etc.
 
+// ---- PrimeVue (optional; remove if you don't use it)
+import PrimeVue from 'primevue/config'
+// If you installed @primeuix/themes:
+import Aura from '@primeuix/themes/aura'
+// If you installed @primevue/themes instead, use this import and
+// delete the one above:
+// import Aura from '@primevue/themes/aura'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
-// Views (we'll create them next)
-import FirebaseSigninView from './views/FirebaseSigninView.vue'
-import FirebaseRegisterView from './views/FirebaseRegisterView.vue'
+// ---- Firebase Auth
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './lib/firebase'
 
-const routes = [
-  { path: '/', name: 'home', component: { template: '<div class="p-4">Home (Week 7)</div>' } },
-  { path: '/signin', name: 'signin', component: FirebaseSigninView },
-  { path: '/register', name: 'register', component: FirebaseRegisterView },
-  {
-    path: '/logout',
-    name: 'logout',
-    component: {
-      template: '<div class="p-4">Logging out…</div>',
-      mounted() {
-        signOut(auth).finally(() => this.$router.replace('/signin'))
-      },
-    },
-  },
-]
+// Create app
+const app = createApp(App)
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
+// Global state for the signed-in user
+const currentUserRef = ref(null)
+app.provide('currentUserRef', currentUserRef)
+
+// PrimeVue setup (safe to remove if you don’t need it)
+app.use(PrimeVue, { theme: { preset: Aura } })
+app.component('DataTable', DataTable)
+app.component('Column', Column)
+
+// Simple auth guard: add meta: { requiresAuth: true } to protected routes
+router.beforeEach((to, from, next) => {
+  if (to.meta?.requiresAuth && !currentUserRef.value) {
+    return next({ name: 'signin', query: { redirect: to.fullPath } })
+  }
+  next()
 })
 
-// Provide a reactive currentUser everywhere
-const app = createApp({
-  setup() {
-    const currentUser = ref(null)
-    onAuthStateChanged(auth, (user) => {
-      currentUser.value = user
-      // REQUIRED in the studio: show current user in Console after sign-in
-      console.log('[Auth] currentUser:', user)
-    })
-    // expose to App via inject (we'll provide below)
-    return {}
-  },
-  render: () => h(App),
+// Wait for the first auth state BEFORE mounting to avoid flicker
+let appMounted = false
+onAuthStateChanged(auth, (user) => {
+  currentUserRef.value = user
+  if (!appMounted) {
+    app.use(router).mount('#app')
+    appMounted = true
+  }
 })
 
-// provide/inject for header & pages
-import { onAuthStateChanged as _oasc } from 'firebase/auth'
-app.provide('auth', auth)
-app.provide(
-  'currentUserRef',
-  (() => {
-    const r = ref(null)
-    _oasc(auth, (u) => (r.value = u))
-    return r
-  })()
-)
-
-app.use(router).mount('#app')
+/* -------------------------------
+   If you want to use the Emulator:
+   - In src/lib/firebase.js, call connectAuthEmulator(auth, 'http://localhost:9099')
+   - Run: firebase emulators:start
+   Use EITHER emulator OR live project, not both.
+-------------------------------- */
