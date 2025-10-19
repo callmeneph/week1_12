@@ -8,6 +8,8 @@ const email = computed(() => currentUserRef?.value?.email || null)
   <nav class="navbar navbar-light bg-light border-bottom">
     <div class="container">
       <RouterLink class="navbar-brand" :to="{ name: 'home' }">Home</RouterLink>
+      <RouterLink class="me-3 text-decoration-none" to="/firestore">Firestore</RouterLink>
+
 
       <div class="ms-auto d-flex align-items-center gap-2">
         <template v-if="email">
