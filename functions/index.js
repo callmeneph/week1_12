@@ -1,32 +1,62 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+// functions/index.js (ESM)
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+// Functions v2 imports
+import { setGlobalOptions } from "firebase-functions/v2";
+import { onRequest } from "firebase-functions/v2/https";
+import logger from "firebase-functions/logger";
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
+// Firestore trigger (if you need it later)
+// import { onDocumentCreated } from "firebase-functions/v2/firestore";
+
+// Admin SDK
+import admin from "firebase-admin";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+
+// Initialize Admin app only once
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+const db = getFirestore();
+
+// Default options for ALL functions here (optional)
 setGlobalOptions({ maxInstances: 10 });
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+/** Simple hello to test the deploy quickly */
+export const myHelloWorld = onRequest((req, res) => {
+  logger.info("Hello logs!", { structuredData: true });
+  res.send("Hello from FIT5032!");
+});
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+/**
+ * HTTP function: counts documents in 'books' collection.
+ * Example: GET https://<region>-<project>.cloudfunctions.net/countBooks
+ * Response: { "count": 42 }
+ */
+export const countBooks = onRequest(async (req, res) => {
+  try {
+    if (req.method !== "GET") {
+      res.status(405).json({ error: "Use GET" });
+      return;
+    }
+    // Aggregation count (Firestore Admin SDK)
+    const agg = await db.collection("books").count().get();
+    res.json({ count: agg.data().count });
+  } catch (err) {
+    logger.error("countBooks failed", err);
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+/* -------------------------------------------------
+   Example Firestore trigger you might add later:
+
+export const notesWelcomeOnCreate = onDocumentCreated("/notes/{noteId}", async (event) => {
+  const snap = event.data;
+  if (!snap) return;
+  const data = snap.data() ?? {};
+  const updates = {};
+  if (data.welcome !== true) updates.welcome = true;
+  if (!data.lastModifiedAt) updates.lastModifiedAt = FieldValue.serverTimestamp();
+  if (Object.keys(updates).length) await snap.ref.update(updates);
+});
+------------------------------------------------- */

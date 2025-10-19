@@ -10,6 +10,8 @@ const email = computed(() => currentUserRef?.value?.email || null)
   <header class="border-bottom py-2 px-3 d-flex align-items-center">
     <RouterLink class="me-3 text-decoration-none" to="/">Home</RouterLink>
     <RouterLink class="me-3 text-decoration-none" to="/addbook">Add Book</RouterLink>
+    <RouterLink class="btn btn-outline-secondary btn-sm ms-2" to="/books/count"> Book Count </RouterLink>
+
 
     <div class="ms-auto d-flex align-items-center gap-2">
       <template v-if="email">

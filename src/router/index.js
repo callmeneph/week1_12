@@ -6,8 +6,9 @@ const SignInView = () => import('@/views/SignInView.vue')
 const RegisterView = () => import('@/views/RegisterView.vue')
 const LogoutView = () => import('@/views/LogoutView.vue')
 
-// ⬇️ new
+
 const AddBookView = () => import('@/views/AddBookView.vue')
+const GetBookCountView = () => import('@/views/GetBookCountView.vue') 
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,8 +17,8 @@ const router = createRouter({
     { path: '/signin', component: SignInView },
     { path: '/register', component: RegisterView },
     { path: '/logout', component: LogoutView },
-    // ⬇️ new
     { path: '/addbook', component: AddBookView },
+    { path: '/books/count', name: 'GetBookCount', component: GetBookCountView,},
   ],
 })
 
