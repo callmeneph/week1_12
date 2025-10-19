@@ -1,50 +1,47 @@
-<!-- src/views/FirebaseRegisterView.vue -->
 <script setup>
 import { ref } from 'vue'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../lib/firebase'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const email = ref('')
 const password = ref('')
-const errorMsg = ref('')
+const msg = ref('')
 
-const register = async () => {
-  errorMsg.value = ''
+const submit = async () => {
+  msg.value = ''
   try {
-    await createUserWithEmailAndPassword(auth, email.value.trim(), password.value)
-    router.push('/')  // go home after registration
-  } catch (err) {
-    errorMsg.value = err.code || err.message
+    await createUserWithEmailAndPassword(auth, email.value, password.value)
+    msg.value = 'Account created!'
+  } catch (e) {
+    msg.value = `Error: ${e.code || e.message || e}`
   }
 }
 </script>
 
 <template>
-  <h1>Register</h1>
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h1 class="h4 mb-3">Register</h1>
 
-  <div style="max-width:520px">
-    <label class="form-label">Email</label>
-    <input class="form-control mb-3" type="email" v-model="email" />
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" v-model="email" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input class="form-control" v-model="password" type="password" placeholder="Min 6 characters" />
+          </div>
 
-    <label class="form-label">Password</label>
-    <input class="form-control mb-3" type="password" v-model="password" />
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-primary" @click="submit">Register</button>
+            <RouterLink :to="{ name: 'signin' }">Already registered? Sign in</RouterLink>
+          </div>
 
-    <small class="text-muted d-block mb-3">Min 6 characters (Firebase rule)</small>
-
-    <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-primary" @click="register">Register</button>
-      <RouterLink to="/signin">Already registered? Sign in</RouterLink>
+          <p v-if="msg" class="mt-3" :class="{'text-danger': msg.startsWith('Error')}">{{ msg }}</p>
+        </div>
+      </div>
     </div>
-
-    <p v-if="errorMsg" class="text-danger mt-3">Error: {{ errorMsg }}</p>
   </div>
 </template>
-
-<style scoped>
-.form-control { width: 100%; padding: .5rem .75rem; border:1px solid #ccc; border-radius: .375rem; }
-.btn { padding:.5rem .75rem; border:1px solid transparent; border-radius:.375rem; background:#0d6efd; color:#fff; }
-.text-danger { color:#dc3545; }
-.text-muted { color:#6c757d; }
-</style>
