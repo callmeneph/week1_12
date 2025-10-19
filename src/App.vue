@@ -6,8 +6,10 @@ const email = computed(() => currentUserRef?.value?.email || null)
 </script>
 
 <template>
-  <header style="border-bottom:1px solid #eee" class="py-2 px-3 d-flex align-items-center">
+  <!-- src/App.vue (header part only) -->
+  <header class="border-bottom py-2 px-3 d-flex align-items-center">
     <RouterLink class="me-3 text-decoration-none" to="/">Home</RouterLink>
+    <RouterLink class="me-3 text-decoration-none" to="/addbook">Add Book</RouterLink>
 
     <div class="ms-auto d-flex align-items-center gap-2">
       <template v-if="email">
@@ -20,6 +22,7 @@ const email = computed(() => currentUserRef?.value?.email || null)
       </template>
     </div>
   </header>
+
 
   <main class="container py-4">
     <RouterView />
